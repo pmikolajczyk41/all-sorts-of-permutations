@@ -1,5 +1,6 @@
 module Sorters (
   Sorter,
+  Cmp,
   insertSort,
   selectSort,
   bubbleSort,
@@ -38,7 +39,7 @@ selectSort p xs = least : selectSort p greater
           greater = List.delete least xs
 
 -- BUBBLE SORT
-bubble :: Sorter a
+bubble :: Cmp a -> [a] -> [a]
 bubble _ [] = []
 bubble _ [x] = [x]
 bubble p (x:xs) = 
@@ -50,7 +51,6 @@ bubbleSort :: Sorter a
 bubbleSort _ [] = []
 bubbleSort p xs = least:bubbleSort p greater
     where least:greater = bubble p xs
-
 
 -- QUICK SORT
 quickSort :: Sorter a
@@ -81,18 +81,16 @@ mergeSort p xs = merge p leftS rightS
           rightS = mergeSort p right  
 
 -- TEST
-checkSorted :: (a -> a -> Bool) -> [a] -> Bool
-checkSorted _ [] = True
-checkSorted _ [x] = True
-checkSorted p (x:y:z) = p x y && checkSorted p (y:z)
+checkSorted :: Cmp a -> [a] -> Bool
+checkSorted p xs = all (uncurry p) (zip xs (tail xs))
 
-runCheck :: Cmp a -> [Sorter a] -> [a] -> ()
-runCheck p ss xs
-    |all (checkSorted p) results = ()
+runCheck :: Cmp a -> Sorter a -> [a] -> Bool
+runCheck p s xs
+    |checkSorted p result = True
     |otherwise = error "Incorrect sorting"
-        where results = map (\s -> s p xs) ss
+        where result = s p xs
 
 sorters = [insertSort, selectSort, bubbleSort, quickSort, mergeSort]
 
-testOn :: (Eq a) => Cmp a -> [a] -> ()
-testOn p xs = runCheck p sorters xs
+testOn :: (Eq a) => Cmp a -> [a] -> [Bool]
+testOn p xs = map (\s -> runCheck p s xs) sorters
