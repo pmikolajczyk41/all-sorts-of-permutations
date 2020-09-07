@@ -3,7 +3,9 @@ module Predicates (
   consistentCoinCmp,
   Choices,
   CmpMS,
-  noChoices
+  noChoices,
+  checkChoices,
+  storeChoice,
 ) where
 
 import Control.Monad.State
@@ -38,4 +40,4 @@ checkChoices p x y = do
     maybe (p x y) return (lookup (x, y) s)
     
 consistentCoinCmp :: (Eq a, MonadPlus m) => CmpMS a m
-consistentCoinCmp = checkChoices (storeChoice id coinCmp)
+consistentCoinCmp = checkChoices $ storeChoice id coinCmp
