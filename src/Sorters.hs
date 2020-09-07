@@ -92,5 +92,5 @@ runCheck p s xs
 
 sorters = [insertSort, selectSort, bubbleSort, quickSort, mergeSort]
 
-testOn :: (Eq a) => Cmp a -> [a] -> [Bool]
-testOn p xs = map (\s -> runCheck p s xs) sorters
+testOn :: (Eq a) => Cmp a -> [a] -> String
+testOn p xs = if all (\s -> runCheck p s xs) sorters then "OK" else "FAIL"

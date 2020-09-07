@@ -104,5 +104,5 @@ runCheckM p s xs
     
 sortersM = [insertSortM, selectSortM, bubbleSortM, quickSortM, mergeSortM]
 
-testOnM :: (Eq a) => (a -> a -> Bool) -> [a] -> [Bool]
-testOnM p xs = map (\s -> runCheckM p s xs) sortersM
+testOnM :: (Eq a) => (a -> a -> Bool) -> [a] -> String
+testOnM p xs = if all (\s -> runCheckM p s xs) sortersM then "OK" else "FAIL"
